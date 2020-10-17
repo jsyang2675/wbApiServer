@@ -3,8 +3,8 @@ package com.service;
 import com.enums.Gender;
 import com.enums.inbody.InbodyBodyType;
 import com.enums.inbody.InbodyStandardType;
-import com.model.inbody.InbodyRequestForm;
-import com.model.inbody.InbodyResponseForm;
+import com.model.request.InbodyRequest;
+import com.model.response.InbodyResponse;
 import lombok.Data;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +14,12 @@ import java.util.Map;
 @Service
 public class InbodyService {
 
-    private final static Map<Gender, StandardValues> standardMap = new HashMap();
+    private static final Map<String, StandardValues> standardMap = new HashMap();
 
     private void setStandardValue() {
-        standardMap.put(Gender.MAN, new StandardValues(0.15,0.85,
+        standardMap.put(Gender.MAN.name(), new StandardValues(0.15,0.85,
                 22,0.475,0.15));
-        standardMap.put(Gender.WOMAN, new StandardValues(0.23, 0.77,
+        standardMap.put(Gender.WOMAN.name(), new StandardValues(0.23, 0.77,
                 21,0.418,0.186));
     }
 
@@ -28,7 +28,7 @@ public class InbodyService {
      * @param requestForm
      * @return
      */
-    public InbodyResponseForm calcInbodyResult(InbodyRequestForm requestForm) {
+    public InbodyResponse calcInbodyResult(InbodyRequest requestForm) throws Exception {
         //남자,여자별 표준 값 담기
         setStandardValue();
         StandardValues standardValues = standardMap.get(requestForm.getGender());
@@ -54,17 +54,17 @@ public class InbodyService {
         standardValues.setCalcStandardWeight(standardWeight);
 
         //표준체중률
-        Double standardWeightPercentage = calcStandardWeightPercentage(requestForm, standardValues);
+        double standardWeightPercentage = calcStandardWeightPercentage(requestForm, standardValues);
         //표준골격률
-        Double standardPhysiqueWeightPercentage = calcStandardPhysiqueWeightPercentage(requestForm, standardValues);
+        double standardPhysiqueWeightPercentage = calcStandardPhysiqueWeightPercentage(requestForm, standardValues);
         //표준체지방률
-        Double standardBodyFatWeightPercentage = calcStandardBodyFatWeightPercentage(requestForm, standardValues);
+        double standardBodyFatWeightPercentage = calcStandardBodyFatWeightPercentage(requestForm, standardValues);
 
         //인바디 체형정보
         InbodyBodyType inbodyBodyType = getInbodyBodyType(standardWeightPercentage,
                 standardPhysiqueWeightPercentage, standardBodyFatWeightPercentage);
 
-        return new InbodyResponseForm(standardWeightPercentage, standardPhysiqueWeightPercentage,
+        return new InbodyResponse(standardWeightPercentage, standardPhysiqueWeightPercentage,
                 standardBodyFatWeightPercentage, inbodyScore, inbodyBodyType);
     }
 
@@ -134,7 +134,7 @@ public class InbodyService {
      * 표준 범위 85~115%
      * 기준 값 : 표준체중
      */
-    private Double calcStandardWeightPercentage(InbodyRequestForm requestForm, StandardValues standardValues) {
+    private Double calcStandardWeightPercentage(InbodyRequest requestForm, StandardValues standardValues) {
         double weightStandardPercentage = requestForm.getWeight() / standardValues.getCalcStandardWeight() * 100;
         return Math.round(weightStandardPercentage*100)/100.0;
     }
@@ -145,7 +145,7 @@ public class InbodyService {
      * 기준 값 : 표준체중 * [ 남자 : 45~50% -> 47.5%, 여자 : 37~40% -> 38.5% ]
      *          [ 표준체중 = 키(m)^2 * 표준BMI ]
      */
-    private Double calcStandardPhysiqueWeightPercentage(InbodyRequestForm requestForm, StandardValues standardValues) {
+    private Double calcStandardPhysiqueWeightPercentage(InbodyRequest requestForm, StandardValues standardValues) {
         //사용자 골격근량
         double userPhysiqueWeight = requestForm.getPhysiqueWeight();
         //기준 값 계산
@@ -160,7 +160,7 @@ public class InbodyService {
      * 표준 범위 80~160%
      * 기준 값 : 표준체중 * [ 남자 : 15%, 여자 : 23% ]
      */
-    private Double calcStandardBodyFatWeightPercentage(InbodyRequestForm requestForm, StandardValues standardValues) {
+    private Double calcStandardBodyFatWeightPercentage(InbodyRequest requestForm, StandardValues standardValues) {
         //사용자 체지방량
         double userBodyFatWeight = requestForm.getBodyFatWeight();
         //기준 값 계산

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DietFood {
+public class DietFoodDto {
     private String id;
     private String name;
     private Integer quantity;
@@ -18,7 +18,7 @@ public class DietFood {
     private Double carbohydrate;
 
     public void addQuantity() {
-        this.quantity = quantity++;
+        this.quantity++;
     }
 
     public void setQuantity(int quantity) {

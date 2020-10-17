@@ -1,13 +1,16 @@
-package com.model.diet;
+package com.model.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Getter @Setter
-public class DietResponseForm {
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class DietResponse {
     private LocalDate date;
-    private List<DietTypeForm> oneDayDietList;
+    private List<DietTypeDto> oneDayDietList;
 }

@@ -1,14 +1,18 @@
-package com.model.inbody;
+package com.model.request;
 
 import com.enums.Gender;
 import com.validator.AllowedEnum;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 import javax.validation.constraints.*;
 
 @Getter
-public class InbodyRequestForm {
+@AllArgsConstructor
+@NoArgsConstructor
+public class InbodyRequest {
     @NotNull
     @AllowedEnum(enumClass = Gender.class)
     private String gender;

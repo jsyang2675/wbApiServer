@@ -25,8 +25,8 @@ public class SwaggerConfig {
                 .produces(getProduceContentTypes())
                 .apiInfo(getApiInfo())
                 .select()
-                .apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
-                .paths(PathSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("com.controller"))
+                .paths(PathSelectors.regex("/api.*"))
                 .build();
     }
 
@@ -47,6 +47,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("wellbeeing api")
                 .description("루비콘 3팀 웰비잉 API웹문서 입니다.")
+                .version("V5")
                 .build();
     }
 }

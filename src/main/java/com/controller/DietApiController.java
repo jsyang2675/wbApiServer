@@ -1,12 +1,17 @@
 package com.controller;
 
-import com.model.diet.DietResponseForm;
-import com.model.diet.DietTypeForm;
-import com.model.diet.DietRequestForm;
+import com.model.response.CommonResponse;
+import com.model.response.DietResponse;
+import com.model.response.DietTypeDto;
+import com.model.request.DietRequest;
 import com.service.DietService;
+import com.validator.CommonValidator;
 import io.swagger.annotations.ApiOperation;
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,10 +21,16 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@Slf4j
 public class DietApiController {
 
-    @Autowired
-    private DietService dietService;
+    private final DietService dietService;
+    private final CommonValidator commonValidator;
+
+    public DietApiController(DietService dietService, CommonValidator commonValidator) {
+        this.dietService = dietService;
+        this.commonValidator = commonValidator;
+    }
 
     @GetMapping("/")
     public String main() {
@@ -27,51 +38,122 @@ public class DietApiController {
     }
 
     @ApiOperation(value="한 주 식단리스트 조회", notes = "")
-    @PostMapping("/api/weekDietList")
-    public Result weekDietList(@RequestBody @Valid DietRequestForm dietRequestForm) {
+    @PostMapping("/api/week-diet")
+    public Result weekDietList(@RequestBody @Valid DietRequest dietRequest, BindingResult bindingResult) {
+        double oneDayCalorieAmount = 0.0;
+        double oneDayTakeCalorieAmount = 0.0;
 
-        //하루필요에너지량 구하기
-        double oneDayCalorieAmount = dietService.calcOneDayCalorieAmount(dietRequestForm);
-
-        //하루섭취칼로리량 구하기 ( 하루필요에너지량 - 1000 )
-        double oneDayTakeCalorieAmount = oneDayCalorieAmount - 1000;
-
-        LocalDate date = LocalDate.now();
-        LocalDate finDate = date.plusDays(7);
-
-        //7일치 식단 리스트 담기
-        List<DietResponseForm> dietResultList = new ArrayList<>();
-        while(true) {
-            //하루치 식단리스트 담기
-            oneDayDietList(date, oneDayTakeCalorieAmount, dietResultList);
-            date = date.plusDays(1);
-            if(date.compareTo(finDate) == 0) break;
-        }
-
-        return new Result(oneDayCalorieAmount,
+        //요청데이터검증
+        CommonResponse existError = requestBodyValidate(bindingResult, dietRequest);
+        if(existError != null) new Result(existError,
+                oneDayCalorieAmount,
                 oneDayTakeCalorieAmount,
-                dietResultList);
+                null);
+
+        try {
+            List<DietResponse> dietResultList = new ArrayList<>();
+            //하루필요에너지량 구하기
+            oneDayCalorieAmount = dietService.calcOneDayCalorieAmount(dietRequest);
+            //하루섭취칼로리량 구하기 ( 하루필요에너지량 - 1000 )
+            oneDayTakeCalorieAmount = oneDayCalorieAmount - 1000;
+
+            LocalDate date = LocalDate.now();
+            LocalDate finDate = date.plusDays(7);
+
+            while(true) {
+                //하루치 식단리스트 담기
+                DietResponse dietResponse = oneDayDietList(date, oneDayTakeCalorieAmount);
+                dietResultList.add(dietResponse);
+                date = date.plusDays(1);
+                if(date.compareTo(finDate) == 0) break;
+            }
+            log.info("일주일치 식단리스트 조회 정상 요청");
+
+            return new Result(new CommonResponse(),
+                    oneDayCalorieAmount,
+                    oneDayTakeCalorieAmount,
+                    dietResultList);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+
+            return new Result(new CommonResponse("", "일주일치 식단리스트 조회 오류"),
+                    oneDayCalorieAmount,
+                    oneDayTakeCalorieAmount,
+                    null);
+        }
     }
 
     @ApiOperation(value="당일 식단리스트 조회", notes = "")
-    @PostMapping("/api/todayDietList")
-    public Result todayDietList(@RequestBody @Valid DietRequestForm dietRequestForm) {
+    @PostMapping("/api/today-diet")
+    public Result todayDietList(@RequestBody @Valid DietRequest dietRequest, BindingResult bindingResult) {
+        double oneDayCalorieAmount = 0.0;
+        double oneDayTakeCalorieAmount = 0.0;
 
-        //하루필요에너지량 구하기
-        double oneDayCalorieAmount = dietService.calcOneDayCalorieAmount(dietRequestForm);
-
-        //하루섭취칼로리량 구하기 ( 하루필요에너지량 - 1000 )
-        double oneDayTakeCalorieAmount = oneDayCalorieAmount - 1000;
-
-        LocalDate baseDate = LocalDate.now();
-
-        //하루치 식단 리스트 담기
-        List<DietResponseForm> dietResultList = new ArrayList<>();
-        oneDayDietList(baseDate, oneDayTakeCalorieAmount, dietResultList);
-
-        return new Result(oneDayCalorieAmount,
+        //요청데이터검증
+        CommonResponse existError = requestBodyValidate(bindingResult, dietRequest);
+        if(existError != null) new Result(existError,
+                oneDayCalorieAmount,
                 oneDayTakeCalorieAmount,
-                dietResultList);
+                null);
+
+        try {
+            List<DietResponse> dietResultList = new ArrayList<>();
+            //하루필요에너지량 구하기
+            oneDayCalorieAmount = dietService.calcOneDayCalorieAmount(dietRequest);
+
+            //하루섭취칼로리량 구하기 ( 하루필요에너지량 - 1000 )
+            oneDayTakeCalorieAmount = oneDayCalorieAmount - 1000;
+
+            LocalDate baseDate = LocalDate.now();
+
+            //하루치 식단 리스트 담기
+            DietResponse dietResponse = oneDayDietList(baseDate, oneDayTakeCalorieAmount);
+            dietResultList.add(dietResponse);
+
+            log.info("당일 식단리스트 조회 정상 요청");
+
+            return new Result(new CommonResponse(),
+                    oneDayCalorieAmount,
+                    oneDayTakeCalorieAmount,
+                    dietResultList);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+
+            return new Result(new CommonResponse("", "당일 식단리스트 조회 오류"),
+                    oneDayCalorieAmount,
+                    oneDayTakeCalorieAmount,
+                    null);
+        }
+    }
+
+    /**
+     * 요청데이터검증
+     * @param bindingResult
+     * @param dietRequest
+     * @return 통과시 null반환
+     */
+    private CommonResponse requestBodyValidate(BindingResult bindingResult, DietRequest dietRequest) {
+        //데이터타입검증
+        if(bindingResult.hasErrors()) {
+            String errorField = "";
+            String errorMessage = "";
+            List<FieldError> list = bindingResult.getFieldErrors();
+            for(FieldError error : list) {
+                errorField = error.getField();
+                errorMessage = error.getDefaultMessage();
+                break;
+            }
+            return new CommonResponse(errorField, errorMessage);
+        }
+
+        //데이터조건검증
+        return commonValidator.allowedRangeValidate(dietRequest.getAge(),
+                dietRequest.getHeight(),
+                dietRequest.getWeight(),
+                dietRequest.getPhysiqueWeight(),
+                dietRequest.getBodyFatWeight());
     }
 
     /**
@@ -94,35 +176,32 @@ public class DietApiController {
      * ]
      * @param date 날짜
      * @param oneDayTakeCalorieAmount 하루섭취칼로리량
-     * @param dietList 최종식단리스트
      */
-    private void oneDayDietList(LocalDate date, double oneDayTakeCalorieAmount, List<DietResponseForm> dietList) {
-        DietResponseForm dietResponseForm = new DietResponseForm();
-        dietResponseForm.setDate(date);
+    private DietResponse oneDayDietList(LocalDate date, double oneDayTakeCalorieAmount) {
         //아침,점심,저녁 식단(하루치)을 담기 위한 list
-        List<DietTypeForm> dietTypeList = new ArrayList<>();
+        List<DietTypeDto> dietTypeDtoList = new ArrayList<>();
         //아침식단구성
-        DietTypeForm breakFastTimeDiet = dietService.constructBreakfastTimeDiet(oneDayTakeCalorieAmount);
-        dietTypeList.add(breakFastTimeDiet);
+        DietTypeDto breakFastTimeDiet = dietService.constructBreakfastTimeDiet(oneDayTakeCalorieAmount);
+        dietTypeDtoList.add(breakFastTimeDiet);
         //점심식단구성
-        DietTypeForm launchTimeDiet = dietService.constructLaunchTimeDiet(oneDayTakeCalorieAmount);
-        dietTypeList.add(launchTimeDiet);
+        DietTypeDto launchTimeDiet = dietService.constructLaunchTimeDiet(oneDayTakeCalorieAmount);
+        dietTypeDtoList.add(launchTimeDiet);
         //저녁식단구성
-        DietTypeForm dinnerTimeDiet = dietService.constructDinnerTimeDiet(oneDayTakeCalorieAmount);
-        dietTypeList.add(dinnerTimeDiet);
-        //날짜별 하루치 식단 담기
-        dietResponseForm.setOneDayDietList(dietTypeList);
-        //식단리스트에 날짜별 식단 추가
-        dietList.add(dietResponseForm);
+        DietTypeDto dinnerTimeDiet = dietService.constructDinnerTimeDiet(oneDayTakeCalorieAmount);
+        dietTypeDtoList.add(dinnerTimeDiet);
+        return new DietResponse(date, dietTypeDtoList);
     }
 
-    @Data
+    @Getter
+    @NoArgsConstructor
     static class Result<T> {
+        private CommonResponse response;
         private Double oneDayCalorieAmount;
         private Double oneDayTakeCalorieAmount;
         private T dietList;
 
-        public Result(Double oneDayCalorieAmount, Double oneDayTakeCalorieAmount, T dietList) {
+        public Result(CommonResponse response, Double oneDayCalorieAmount, Double oneDayTakeCalorieAmount, T dietList) {
+            this.response = response;
             this.oneDayCalorieAmount = Math.floor(oneDayCalorieAmount*100)/100.0;
             this.oneDayTakeCalorieAmount = Math.floor(oneDayTakeCalorieAmount*100)/100.0;
             this.dietList = dietList;

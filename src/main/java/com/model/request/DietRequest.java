@@ -1,33 +1,46 @@
-package com.model.diet;
+package com.model.request;
 
 import com.enums.diet.ActiveMetabolism;
 import com.enums.diet.DietType;
 import com.enums.Gender;
+import com.validator.AllowedEnum;
 import io.swagger.annotations.ApiParam;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DietRequestForm {
+public class DietRequest {
     @NotNull
-    private DietType dietType;
+    @AllowedEnum(enumClass = DietType.class)
+    private String dietType;
+
     @NotNull
-    private Gender gender;
-    @NotNull
+    @AllowedEnum(enumClass = Gender.class)
+    private String gender;
+
+    @Positive
     private int age;
-    @NotNull
+
+    @Positive
     private double height;
-    @NotNull
+
+    @Positive
     private double weight;
-    @NotNull
+
+    @PositiveOrZero
     private double physiqueWeight;
-    @NotNull
+
+    @PositiveOrZero
     private double bodyFatWeight;
+
     @NotNull
-    private ActiveMetabolism activeMetabolism;
+    @AllowedEnum(enumClass = ActiveMetabolism.class)
+    private String activeMetabolism;
 
     //단위환산 (cm -> m)
     public double getHeight() {

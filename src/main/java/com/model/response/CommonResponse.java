@@ -1,25 +1,28 @@
-package com.model;
+package com.model.response;
 
 import com.enums.ResponseCode;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
-@Getter @Setter
-public class CommonResponseForm {
+@Getter
+@AllArgsConstructor
+public class CommonResponse {
     private int code;
     private boolean status;
-    private String message;
+    private String errorField;
+    private String errorMessage;
 
     //실패시
-    public CommonResponseForm(String message) {
+    public CommonResponse(String errorField, String errorMessage) {
         this.code = ResponseCode.BAD_REQUEST.getCode();
+        this.errorField = errorField;
         this.status = false;
-        this.message = message;
+        this.errorMessage = errorMessage;
     }
     //성공시
-    public CommonResponseForm() {
+    public CommonResponse() {
         this.code = ResponseCode.OK.getCode();
         this.status = true;
-        this.message = "성공";
     }
+
 }

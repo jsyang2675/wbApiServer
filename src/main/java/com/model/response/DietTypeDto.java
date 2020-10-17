@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DietType {
+public class DietTypeDto {
     private String type;
-    private List<DietFood> foodList;
+    private List<DietFoodDto> foodList;
 }

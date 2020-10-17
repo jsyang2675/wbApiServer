@@ -1,7 +1,7 @@
 spring:
   datasource:
-#    url: jdbc:mariadb://localhost:3306/jsyang
-    url: jdbc:mariadb://18.220.136.202:3306/jsyang
+    url: jdbc:mariadb://localhost:3306/jsyang
+#    url: jdbc:mariadb://18.220.136.202:3306/jsyang
     username: jsyang
     password: jsyang
     driver-class-name: org.mariadb.jdbc.Driver
@@ -14,6 +14,6 @@ spring:
         #        show_sql: true
         format_sql: true
 
-logging:
-  level:
-    org.hibernate.SQL: debug
+#logging:
+#  level:
+#    org.hibernate.SQL: debug
