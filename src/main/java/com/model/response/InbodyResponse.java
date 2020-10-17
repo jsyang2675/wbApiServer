@@ -2,9 +2,11 @@ package com.model.inbody;
 
 import com.enums.inbody.InbodyBodyType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@NoArgsConstructor
 public class InbodyResponseForm {
     private Double weightPercentage;
     private Double physiqueWeightPercentage;
