@@ -39,18 +39,18 @@ public class DietApiController {
 
     @ApiOperation(value="한 주 식단리스트 조회", notes = "")
     @PostMapping("/api/week-diet")
-    public Result weekDietList(@RequestBody @Valid DietRequest dietRequest, BindingResult bindingResult) {
+    public Result weekDietList(@RequestBody @Valid DietRequest dietRequest) {
         double oneDayCalorieAmount = 0.0;
         double oneDayTakeCalorieAmount = 0.0;
 
         //요청데이터검증
-        CommonResponse existError = requestBodyValidate(bindingResult, dietRequest);
-        if(existError != null) new Result(existError,
-                oneDayCalorieAmount,
-                oneDayTakeCalorieAmount,
-                null);
+//        CommonResponse existError = requestBodyValidate(bindingResult, dietRequest);
+//        if(existError != null) new Result(existError,
+//                oneDayCalorieAmount,
+//                oneDayTakeCalorieAmount,
+//                null);
 
-        try {
+//        try {
             List<DietResponse> dietResultList = new ArrayList<>();
             //하루필요에너지량 구하기
             oneDayCalorieAmount = dietService.calcOneDayCalorieAmount(dietRequest);
@@ -73,15 +73,15 @@ public class DietApiController {
                     oneDayCalorieAmount,
                     oneDayTakeCalorieAmount,
                     dietResultList);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-
-            return new Result(new CommonResponse("", "일주일치 식단리스트 조회 오류"),
-                    oneDayCalorieAmount,
-                    oneDayTakeCalorieAmount,
-                    null);
-        }
+//        }
+//        catch (Exception e) {
+//            e.printStackTrace();
+//
+//            return new Result(new CommonResponse("", "일주일치 식단리스트 조회 오류"),
+//                    oneDayCalorieAmount,
+//                    oneDayTakeCalorieAmount,
+//                    null);
+//        }
     }
 
     @ApiOperation(value="당일 식단리스트 조회", notes = "")
