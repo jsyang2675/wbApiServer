@@ -16,12 +16,10 @@ import javax.validation.constraints.PositiveOrZero;
 @NoArgsConstructor
 public class DietRequest {
     @NotNull
-    @AllowedEnum(enumClass = DietType.class)
-    private String dietType;
+    private DietType dietType;
 
     @NotNull
-    @AllowedEnum(enumClass = Gender.class)
-    private String gender;
+    private Gender gender;
 
     @Positive
     private int age;
@@ -39,11 +37,11 @@ public class DietRequest {
     private double bodyFatWeight;
 
     @NotNull
-    @AllowedEnum(enumClass = ActiveMetabolism.class)
-    private String activeMetabolism;
+    private ActiveMetabolism activeMetabolism;
 
     //단위환산 (cm -> m)
     public double getHeight() {
         return height/100.0;
     }
+
 }

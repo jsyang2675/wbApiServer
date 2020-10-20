@@ -14,8 +14,7 @@ import javax.validation.constraints.*;
 @NoArgsConstructor
 public class InbodyRequest {
     @NotNull
-    @AllowedEnum(enumClass = Gender.class)
-    private String gender;
+    private Gender gender;
 
     @Positive
     private double weight;

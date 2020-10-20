@@ -185,10 +185,10 @@ public class DietService {
      * @return
      */
     public Double calcOneDayCalorieAmount(DietRequest DietRequest) {
-        if(Gender.MAN.name().equals(DietRequest.getGender())) {
+        if(Gender.MAN.equals(DietRequest.getGender())) {
             return calcOneDayCalorieAmountByMan(DietRequest);
         }
-        if(Gender.WOMAN.name().equals(DietRequest.getGender())) {
+        if(Gender.WOMAN.equals(DietRequest.getGender())) {
             return calcOneDayCalorieAmountByWoMan(DietRequest);
         }
         return 0.0;
@@ -201,10 +201,10 @@ public class DietService {
      */
     private Double calcOneDayCalorieAmountByMan(DietRequest DietRequest) {
         double PA = 0.0;
-        if(ActiveMetabolism.ACTIVE_LV0.name().equals(DietRequest.getActiveMetabolism())) PA = 1.0;
-        else if(ActiveMetabolism.ACTIVE_LV1.name().equals(DietRequest.getActiveMetabolism())) PA = 1.11;
-        else if(ActiveMetabolism.ACTIVE_LV2.name().equals(DietRequest.getActiveMetabolism())) PA = 1.25;
-        else if(ActiveMetabolism.ACTIVE_LV3.name().equals(DietRequest.getActiveMetabolism())) PA = 1.48;
+        if(ActiveMetabolism.ACTIVE_LV0.equals(DietRequest.getActiveMetabolism())) PA = 1.0;
+        else if(ActiveMetabolism.ACTIVE_LV1.equals(DietRequest.getActiveMetabolism())) PA = 1.11;
+        else if(ActiveMetabolism.ACTIVE_LV2.equals(DietRequest.getActiveMetabolism())) PA = 1.25;
+        else if(ActiveMetabolism.ACTIVE_LV3.equals(DietRequest.getActiveMetabolism())) PA = 1.48;
 
         double a = 662.0-(9.53* DietRequest.getAge());
         double b = 15.91* DietRequest.getWeight();
@@ -219,10 +219,10 @@ public class DietService {
      */
     private Double calcOneDayCalorieAmountByWoMan(DietRequest DietRequest) {
         double PA = 0.0;
-        if(ActiveMetabolism.ACTIVE_LV0.name().equals(DietRequest.getActiveMetabolism())) PA = 1.0;
-        else if(ActiveMetabolism.ACTIVE_LV1.name().equals(DietRequest.getActiveMetabolism())) PA = 1.12;
-        else if(ActiveMetabolism.ACTIVE_LV2.name().equals(DietRequest.getActiveMetabolism())) PA = 1.27;
-        else if(ActiveMetabolism.ACTIVE_LV3.name().equals(DietRequest.getActiveMetabolism())) PA = 1.45;
+        if(ActiveMetabolism.ACTIVE_LV0.equals(DietRequest.getActiveMetabolism())) PA = 1.0;
+        else if(ActiveMetabolism.ACTIVE_LV1.equals(DietRequest.getActiveMetabolism())) PA = 1.12;
+        else if(ActiveMetabolism.ACTIVE_LV2.equals(DietRequest.getActiveMetabolism())) PA = 1.27;
+        else if(ActiveMetabolism.ACTIVE_LV3.equals(DietRequest.getActiveMetabolism())) PA = 1.45;
 
         double a = 354.0-(6.91* DietRequest.getAge());
         double b = 9.36* DietRequest.getWeight();

@@ -56,9 +56,7 @@ public class InbodyApiController {
         if(existError != null) return new Result(existError, null);
 
         try {
-            InbodyResponse inbodyResponse = new InbodyResponse();
-            inbodyResponse = inbodyService.calcInbodyResult(inbodyRequest);
-
+            InbodyResponse inbodyResponse = inbodyService.calcInbodyResult(inbodyRequest);
             log.info("인바디 점수 및 체형정보 조회 정상 요청");
 
             return new Result(new CommonResponse(), inbodyResponse);

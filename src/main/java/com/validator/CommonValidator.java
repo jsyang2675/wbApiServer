@@ -26,6 +26,9 @@ public class CommonValidator {
         if(bodyFatWeight != null && bodyFatWeight.compareTo(100.0) > 0)
             return new CommonResponse("bodyFatWeight", "100kg까지 입력 가능합니다.");
 
+        if(weight < (physiqueWeight + bodyFatWeight))
+            return new CommonResponse("", "골격근량과 체지방량의 합이 몸무게 보다 클 수 없습니다.");
+
         return null;
     }
 
