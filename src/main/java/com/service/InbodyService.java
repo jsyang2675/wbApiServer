@@ -14,12 +14,12 @@ import java.util.Map;
 @Service
 public class InbodyService {
 
-    private static final Map<String, StandardValues> standardMap = new HashMap();
+    private static final Map<Gender, StandardValues> standardMap = new HashMap();
 
     private void setStandardValue() {
-        standardMap.put(Gender.MAN.name(), new StandardValues(0.15,0.85,
+        standardMap.put(Gender.MAN, new StandardValues(0.15,0.85,
                 22,0.475,0.15));
-        standardMap.put(Gender.WOMAN.name(), new StandardValues(0.23, 0.77,
+        standardMap.put(Gender.WOMAN, new StandardValues(0.23, 0.77,
                 21,0.418,0.186));
     }
 
