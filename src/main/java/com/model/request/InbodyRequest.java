@@ -1,7 +1,6 @@
 package com.model.request;
 
 import com.enums.Gender;
-import com.validator.AllowedEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

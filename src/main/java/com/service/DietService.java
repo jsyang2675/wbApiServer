@@ -18,8 +18,11 @@ import java.util.List;
 @Service
 public class DietService {
 
-    @Autowired
-    private FoodDetailRepository foodDetailRepository;
+    private final FoodDetailRepository foodDetailRepository;
+
+    public DietService(FoodDetailRepository foodDetailRepository) {
+        this.foodDetailRepository = foodDetailRepository;
+    }
 
     /**
      * 아침 식단 구성
@@ -65,8 +68,8 @@ public class DietService {
      * @return DietTypeDto
      */
     public DietTypeDto constructLaunchTimeDiet(double oneDayTakeCalorieAmount) {
-        //점심에 할당된 칼로리 비율 5
-        double calorie = oneDayTakeCalorieAmount/10.0*5.0;
+        //점심에 할당된 칼로리 비율 4.5
+        double calorie = oneDayTakeCalorieAmount/10.0*4.5;
 
         List<DietFoodDto> foodList = new ArrayList<>();
 
@@ -96,8 +99,8 @@ public class DietService {
      * @return DietTypeDto
      */
     public DietTypeDto constructDinnerTimeDiet(double oneDayTakeCalorieAmount) {
-        //저녁에 할당된 칼로리 비율 2
-        double calorie = oneDayTakeCalorieAmount/10.0*2.0;
+        //저녁에 할당된 칼로리 비율 2.5
+        double calorie = oneDayTakeCalorieAmount/10.0*2.5;
 
         List<DietFoodDto> foodList = new ArrayList<>();
 
@@ -107,6 +110,8 @@ public class DietService {
         if(remainCalorie > 0) remainCalorie = calcCalorieAndPutInFood(FoodType.단백질, foodList, remainCalorie);
         //채소 담기
         if(remainCalorie > 0) remainCalorie = calcCalorieAndPutInFood(FoodType.채소, foodList, remainCalorie);
+        //닭가슴살 담기
+        if(remainCalorie > 0) remainCalorie = calcCalorieAndPutInFood(FoodType.닭가슴살, foodList, remainCalorie);
 
         //음식이 1개도 담기지 않았으면 빈 채로 반환
         if(foodList.isEmpty()) return new DietTypeDto("저녁", null);
@@ -231,16 +236,13 @@ public class DietService {
     }
 
     /**
-     * 하루 에너지섭취량 조건
-     * 구간 1. 에너지필요량 1000 이하 : 뺄 살이 없음으로 판단
-     * 구간 2. 에너지필요량 1000 초과 1500 이하 :
+     * 하루 에너지섭취량 구간별 조건 적용
+     * 미정
      * @param calcOneDayCalorieAmount
      * @return
      */
     public Double oneDayTakeCalorieAmountCondition(double calcOneDayCalorieAmount) {
-
-
-        return 0.0;
+        return calcOneDayCalorieAmount*0.5;
     }
 
 }

@@ -55,8 +55,8 @@ public class DietApiController {
             List<DietResponse> dietResultList = new ArrayList<>();
             //하루필요에너지량 구하기
             oneDayCalorieAmount = dietService.calcOneDayCalorieAmount(dietRequest);
-            //하루섭취칼로리량 구하기 ( 하루필요에너지량 - 1000 )
-            oneDayTakeCalorieAmount = oneDayCalorieAmount - 1000;
+            //하루섭취칼로리량 구하기
+            oneDayTakeCalorieAmount = dietService.oneDayTakeCalorieAmountCondition(oneDayCalorieAmount);
 
             LocalDate date = LocalDate.now();
             LocalDate finDate = date.plusDays(7);
@@ -103,9 +103,8 @@ public class DietApiController {
             List<DietResponse> dietResultList = new ArrayList<>();
             //하루필요에너지량 구하기
             oneDayCalorieAmount = dietService.calcOneDayCalorieAmount(dietRequest);
-
-            //하루섭취칼로리량 구하기 ( 하루필요에너지량 - 1000 )
-            oneDayTakeCalorieAmount = oneDayCalorieAmount - 1000;
+            //하루섭취칼로리량 구하기
+            oneDayTakeCalorieAmount = dietService.oneDayTakeCalorieAmountCondition(oneDayCalorieAmount);
 
             LocalDate baseDate = LocalDate.now();
 

@@ -70,16 +70,16 @@ public class InbodyService {
 
     /**
      * 인바디 체형 정보
-     * -표준체중 표준범위 85~115%
+     * -표준체중 표준범위 85~115(+5)%
      * -표준골격근량 표준범위 90~110%
-     * -표준체지방 표준범위 80~160%
+     * -표준체지방 표준범위 80~160(+15)%
      */
     private InbodyBodyType getInbodyBodyType(double standardWeightPercentage,
                                      double standardPhysiqueWeightPercentage, double standardBodyFatWeightPercentage) {
         //체중 범위 지정
         InbodyStandardType weightRange = InbodyStandardType.표준;
         if(standardWeightPercentage < 85) weightRange = InbodyStandardType.표준이하;
-        else if(standardWeightPercentage > 115) weightRange = InbodyStandardType.표준이상;
+        else if(standardWeightPercentage > 120) weightRange = InbodyStandardType.표준이상;
         //골격근량 범위 지정
         InbodyStandardType physiqueWeightRange = InbodyStandardType.표준;
         if(standardPhysiqueWeightPercentage < 90) physiqueWeightRange = InbodyStandardType.표준이하;
@@ -87,7 +87,7 @@ public class InbodyService {
         //체지방량 범위 지정
         InbodyStandardType bodyFatWeightRange = InbodyStandardType.표준;
         if(standardBodyFatWeightPercentage < 80) bodyFatWeightRange = InbodyStandardType.표준이하;
-        else if(standardBodyFatWeightPercentage > 160) bodyFatWeightRange = InbodyStandardType.표준이상;
+        else if(standardBodyFatWeightPercentage > 175) bodyFatWeightRange = InbodyStandardType.표준이상;
 
         /**
          * 체중 기준으로 표준형,저체중형,과체중형 나눠짐
